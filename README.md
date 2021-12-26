@@ -1,4 +1,6 @@
-# RabbitLink
+# RabbitRelink
+This repository is fork of original [RabbitLink](https://github.com/rabbit-link/rabbit-link) realization
+
 
 Package | Info
 -|-
