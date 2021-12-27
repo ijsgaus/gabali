@@ -141,7 +141,7 @@ public sealed record MessageProperties()
 
     #region Private methods
 
-    private static string CheckShortString(string name, string? input)
+    private static string? CheckShortString(string name, string? input)
     {
         input = NormalizeString(input);
 
@@ -153,7 +153,7 @@ public sealed record MessageProperties()
         return input;
     }
 
-    private static string NormalizeString(string? input)
+    private static string? NormalizeString(string? input)
     {
         if (string.IsNullOrWhiteSpace(input))
             return null;

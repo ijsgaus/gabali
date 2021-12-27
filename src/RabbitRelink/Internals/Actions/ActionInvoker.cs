@@ -38,7 +38,7 @@ namespace RabbitRelink.Internals.Actions
             }
         }
 
-        public async Task<T> InvokeAsync<T>(Func<TActor, T> action, CancellationToken cancellation)
+        public async Task<T?> InvokeAsync<T>(Func<TActor, T?> action, CancellationToken cancellation)
         {
             using (var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellation, cancellation))
             {

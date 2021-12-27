@@ -16,7 +16,7 @@ namespace RabbitRelink.Topology.Internal
         #region Fields
 
         private readonly IRelinkChannel _channel;
-        private readonly RelinkTopologyConfig _config;
+        private readonly TopologyConfig _config;
         private readonly IRelinkLogger _logger;
         private readonly object _sync = new object();
         private readonly TopologyRunner<object> _topologyRunner;
@@ -27,7 +27,7 @@ namespace RabbitRelink.Topology.Internal
 
         #region Ctor
 
-        public RelinkTopology(IRelinkChannel channel, RelinkTopologyConfig config, Func<ITopologyCommander, Task> handler)
+        public RelinkTopology(IRelinkChannel channel, TopologyConfig config, Func<ITopologyCommander, Task> handler)
             : base(LinkTopologyState.Init)
         {
             _channel = channel ?? throw new ArgumentNullException(nameof(channel));
@@ -39,7 +39,7 @@ namespace RabbitRelink.Topology.Internal
             _topologyRunner = new TopologyRunner<object>(_logger, async cfg =>
             {
                 await handler(cfg).ConfigureAwait(false);
-                return null;
+                return null!;
             });
 
             _channel.Disposed += ChannelOnDisposed;

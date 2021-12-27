@@ -49,6 +49,7 @@ public class Relink : IRelink
     internal IRelinkChannel CreateChannel(StateHandler<RelinkChannelState> stateHandler, TimeSpan recoveryInterval)
         => new RelinkChannel(_connection, stateHandler, recoveryInterval);
 
-    public IRelinkTopologyBuilder Topology() => new RelinkTopologyBuilder(this);
+    public ITopologyBuilder Topology() => new TopologyBuilder(this);
+    public IConsumerQueueBuilder Consumer() => new ConsumerQueueBuilder(this);
 
 }

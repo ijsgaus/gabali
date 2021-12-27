@@ -29,5 +29,6 @@ public interface IRelink : IDisposable
     /// </summary>
     void Initialize();
 
-    IRelinkTopologyBuilder Topology();
+    ITopologyBuilder Topology();
+    IConsumerQueueBuilder Consumer();
 }

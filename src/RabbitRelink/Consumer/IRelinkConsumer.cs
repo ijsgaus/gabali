@@ -9,41 +9,15 @@ namespace RabbitRelink.Consumer
     /// </summary>
     public interface IRelinkConsumer : IDisposable
     {
-        #region Properties
-
         /// <summary>
         ///     Consumer Id
         /// </summary>
         Guid Id { get; }
 
         /// <summary>
-        ///     Message prefetch count
+        /// Consumer configuration
         /// </summary>
-        ushort PrefetchCount { get; }
-
-        /// <summary>
-        ///     Auto ack on consume
-        /// </summary>
-        bool AutoAck { get; }
-
-        /// <summary>
-        ///     Consumer priority
-        ///     See https://www.rabbitmq.com/consumer-priority.html for more details
-        /// </summary>
-        int? Priority { get; }
-
-        /// <summary>
-        ///     Is consumer will be cancelled (then it will be automatically recover) on HA failover
-        ///     See https://www.rabbitmq.com/ha.html for more details
-        /// </summary>
-        bool CancelOnHaFailover { get; }
-
-        /// <summary>
-        ///     Is consumer exclusive
-        /// </summary>
-        bool Exclusive { get; }
-
-        #endregion
+        PushConsumerConfig Config { get; }
 
         /// <summary>
         ///     Waits for consumer ready

@@ -3,12 +3,12 @@ using RabbitRelink.Topology.Internal;
 
 namespace RabbitRelink;
 
-internal class RelinkTopologyHandlerBuilder : IRelinkTopologyHandlerBuilder
+internal class TopologyHandlerBuilder : ITopologyHandlerBuilder
 {
     protected readonly Relink Relink;
-    private Func<RelinkTopologyConfig, RelinkTopologyConfig>? _configure;
+    private Func<TopologyConfig, TopologyConfig>? _configure;
 
-    public RelinkTopologyHandlerBuilder(Relink relink, Func<RelinkTopologyConfig, RelinkTopologyConfig>? configure)
+    public TopologyHandlerBuilder(Relink relink, Func<TopologyConfig, TopologyConfig>? configure)
     {
         Relink = relink;
         _configure = configure;
@@ -17,7 +17,7 @@ internal class RelinkTopologyHandlerBuilder : IRelinkTopologyHandlerBuilder
     public IRelinkTopology Handler(Func<ITopologyCommander, Task> handler)
     {
         _configure ??= (p => p);
-        var config = _configure(new RelinkTopologyConfig());
+        var config = _configure(new TopologyConfig());
         return new RelinkTopology(
             Relink.CreateChannel(config.OnChannelStateChanged, config.RecoveryInterval),
             config,

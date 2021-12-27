@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Threading.Tasks.Dataflow;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitRelink.Connection;
@@ -15,7 +16,7 @@ namespace RabbitRelink.Consumer
 {
     internal class RelinkConsumer : AsyncStateMachine<RelinkConsumerState>, IRelinkConsumerInternal, IRelinkChannelHandler
     {
-        private readonly RelinkConsumerConfig _config;
+        public PushConsumerConfig Config { get; }
         private readonly Func<ConsumedMessage<byte[]>, Task<Acknowledge>> _handler;
         private readonly IRelinkChannel _channel;
         private readonly IRelinkLogger _logger;
@@ -35,14 +36,15 @@ namespace RabbitRelink.Consumer
         private volatile CancellationTokenSource? _consumerCancellationTokenSource;
 
         private readonly string _appId;
+        private readonly ActionBlock<(ConsumedMessage<byte[]> msg, ulong deliveryTag)> _actionBlock;
 
         public RelinkConsumer(
-            RelinkConsumerConfig config,
+            PushConsumerConfig config,
             IRelinkChannel channel,
             Func<ITopologyCommander, Task<IQueue>> topologyHandler,
             Func<ConsumedMessage<byte[]>, Task<Acknowledge>> handler) : base(RelinkConsumerState.Init)
         {
-            _config = config;
+            Config = config;
 
             _channel = channel ?? throw new ArgumentNullException(nameof(channel));
             _handler = handler;
@@ -56,14 +58,16 @@ namespace RabbitRelink.Consumer
             _channel.Disposed += ChannelOnDisposed;
 
             _channel.Initialize(this);
+            _actionBlock = new ActionBlock<(ConsumedMessage<byte[]> msg, ulong deliveryTag)>(HandleMessageAsync,
+                new ExecutionDataflowBlockOptions
+                {
+                    EnsureOrdered = true,
+                    MaxDegreeOfParallelism = Config.Parallelism > 0 ? Config.Parallelism : 1,
+                });
         }
 
         public Guid Id { get; } = Guid.NewGuid();
-        public ushort PrefetchCount => _config.PrefetchCount;
-        public bool AutoAck => _config.AutoAck;
-        public int? Priority => _config.Priority;
-        public bool CancelOnHaFailover => _config.CancelOnHaFailover;
-        public bool Exclusive => _config.Exclusive;
+
 
         public Task WaitReadyAsync(CancellationToken? cancellation = null)
         {
@@ -97,6 +101,8 @@ namespace RabbitRelink.Consumer
 
                 _logger.Debug($"Disposing ( by channel: {byChannel} )");
 
+                _actionBlock.Complete();
+
                 _channel.Disposed -= ChannelOnDisposed;
                 if (!byChannel)
                 {
@@ -121,7 +127,7 @@ namespace RabbitRelink.Consumer
 
             try
             {
-                _config.StateChanged(State, newState);
+                Config.StateChanged(State, newState);
             }
             catch (Exception ex)
             {
@@ -191,8 +197,8 @@ namespace RabbitRelink.Consumer
             {
                 try
                 {
-                    _logger.Debug($"Retrying in {_config.RecoveryInterval.TotalSeconds:0.###}s");
-                    await Task.Delay(_config.RecoveryInterval, cancellation)
+                    _logger.Debug($"Retrying in {Config.RecoveryInterval.TotalSeconds:0.###}s");
+                    await Task.Delay(Config.RecoveryInterval, cancellation)
                         .ConfigureAwait(false);
                 }
                 catch
@@ -313,20 +319,21 @@ namespace RabbitRelink.Consumer
 
             cancellation.ThrowIfCancellationRequested();
 
-            model.BasicQos(0, PrefetchCount, false);
+            if(Config.PrefetchCount > 0)
+                model.BasicQos(0, Config.PrefetchCount, false);
 
             cancellation.ThrowIfCancellationRequested();
 
             var options = new Dictionary<string, object>();
 
 
-            if (Priority != null && Priority != 0)
-                options["x-priority"] = Priority;
+            if (Config.Priority != null && Config.Priority != 0)
+                options["x-priority"] = Config.Priority;
 
-            if (CancelOnHaFailover)
-                options["x-cancel-on-ha-failover"] = CancelOnHaFailover;
+            if (Config.CancelOnHaFailover)
+                options["x-cancel-on-ha-failover"] = Config.CancelOnHaFailover;
 
-            model.BasicConsume(_queue!.Name, AutoAck, Id.ToString("D"), false, Exclusive, options, _consumer);
+            model.BasicConsume(_queue!.Name, Config.AutoAck, Id.ToString("D"), false, Config.Exclusive, options, _consumer);
         }
 
         private void ConsumerOnRegistered(object? sender, ConsumerEventArgs e)
@@ -389,6 +396,38 @@ namespace RabbitRelink.Consumer
         {
             var cancellation = msg.Cancellation;
 
+            if (Config.Parallelism == PushConsumerConfig.PARALLELISM_FULL)
+            {
+
+                Task<Acknowledge> task;
+
+                try
+                {
+                    task = _handler(msg);
+                }
+                catch (Exception ex)
+                {
+                    task = Task.FromException<Acknowledge>(ex);
+                }
+
+
+                task.ContinueWith(
+                    t => OnMessageHandledAsync(t, deliveryTag, cancellation),
+                    cancellation,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Current
+                );
+                return;
+            }
+            _actionBlock.Post((msg, deliveryTag));
+
+        }
+
+        private async Task HandleMessageAsync((ConsumedMessage<byte[]> msg, ulong deliveryTag) param)
+        {
+            var (msg, deliveryTag) = param;
+            var cancellation = msg.Cancellation;
+
             Task<Acknowledge> task;
 
             try
@@ -400,18 +439,13 @@ namespace RabbitRelink.Consumer
                 task = Task.FromException<Acknowledge>(ex);
             }
 
-            task.ContinueWith(
-                t => OnMessageHandledAsync(t, deliveryTag, cancellation),
-                cancellation,
-                TaskContinuationOptions.ExecuteSynchronously,
-                TaskScheduler.Current
-            );
+            await OnMessageHandledAsync(task, deliveryTag, cancellation);
         }
 
         private async Task OnMessageHandledAsync(Task<Acknowledge> task, ulong deliveryTag,
             CancellationToken cancellation)
         {
-            if (AutoAck) return;
+            if (Config.AutoAck) return;
 
             try
             {

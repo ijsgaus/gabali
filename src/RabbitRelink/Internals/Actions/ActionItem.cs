@@ -6,11 +6,11 @@ using RabbitRelink.Internals.Channels;
 
 namespace RabbitRelink.Internals.Actions
 {
-    internal class ActionItem<TActor> : ChannelItem<Func<TActor, object>, object>
+    internal class ActionItem<TActor> : ChannelItem<Func<TActor, object?>, object?>
     {
         #region Ctor
 
-        public ActionItem(Func<TActor, object> value, CancellationToken cancellationToken) : base(value,
+        public ActionItem(Func<TActor, object?> value, CancellationToken cancellationToken) : base(value,
             cancellationToken)
         {
         }

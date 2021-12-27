@@ -2,7 +2,7 @@
 
 namespace RabbitRelink;
 
-public interface IRelinkTopologyHandlerBuilder
+public interface ITopologyHandlerBuilder
 {
     IRelinkTopology Handler(Func<ITopologyCommander, Task> handler);
 }

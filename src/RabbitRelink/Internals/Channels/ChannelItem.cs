@@ -75,8 +75,8 @@ namespace RabbitRelink.Internals.Channels
     {
         #region Fields
 
-        private readonly TaskCompletionSource<object> _tcs =
-            new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource<object?> _tcs =
+            new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         #endregion
 

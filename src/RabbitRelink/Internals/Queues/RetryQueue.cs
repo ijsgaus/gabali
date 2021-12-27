@@ -48,7 +48,7 @@ namespace RabbitRelink.Internals.Queues
                                 if (node == null)
                                     return null!;
 
-                                node.List.Remove(node);
+                                node.List!.Remove(node);
                                 item = node.Value;
                             }
 
@@ -96,7 +96,7 @@ namespace RabbitRelink.Internals.Queues
                                 if (node == null)
                                     return null!;
 
-                                node.List.Remove(node);
+                                node.List!.Remove(node);
                                 item = node.Value;
                             }
 
@@ -199,7 +199,7 @@ namespace RabbitRelink.Internals.Queues
                 throw new ObjectDisposedException(GetType().Name);
 
             var enableCancellations = new Stack<Action>();
-            LinkedListNode<QueueItem> prevNode = null;
+            LinkedListNode<QueueItem>? prevNode = null;
 
 
             try
@@ -263,7 +263,7 @@ namespace RabbitRelink.Internals.Queues
                 throw new ObjectDisposedException(GetType().Name);
 
             var enableCancellations = new Stack<Action>();
-            LinkedListNode<QueueItem> prevNode = null;
+            LinkedListNode<QueueItem>? prevNode = null;
 
             try
             {

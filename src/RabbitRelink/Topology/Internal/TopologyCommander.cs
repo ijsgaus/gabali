@@ -178,7 +178,7 @@ namespace RabbitRelink.Topology.Internal
                 .InvokeAsync(model => model.QueueDeclare())
                 .ConfigureAwait(false);
 
-            _logger.Debug($"Declared exclusive queue with name from server: \"{queue.QueueName}\"");
+            _logger.Debug($"Declared exclusive queue with name from server: \"{queue!.QueueName}\"");
 
             return new Queue(queue.QueueName, true);
         }
@@ -230,7 +230,7 @@ namespace RabbitRelink.Topology.Internal
                 .InvokeAsync(model => model.QueueDeclarePassive(name))
                 .ConfigureAwait(false);
 
-            return new Queue(queue.QueueName, false);
+            return new Queue(queue!.QueueName, false);
         }
 
         public async Task<IQueue> QueueDeclare(
@@ -303,7 +303,7 @@ namespace RabbitRelink.Topology.Internal
                 .ConfigureAwait(false);
 
             _logger.Debug(
-                $"Declared queue \"{queue.QueueName}\", durable: {durable}, exclusive: {exclusive}, autoDelete: {autoDelete}, arguments: {string.Join(", ", arguments.Select(x => $"{x.Key} = {x.Value}"))}");
+                $"Declared queue \"{queue!.QueueName}\", durable: {durable}, exclusive: {exclusive}, autoDelete: {autoDelete}, arguments: {string.Join(", ", arguments.Select(x => $"{x.Key} = {x.Value}"))}");
 
             return new Queue(queue.QueueName, exclusive);
         }

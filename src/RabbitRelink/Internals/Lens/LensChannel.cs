@@ -16,7 +16,7 @@ namespace RabbitRelink.Internals.Lens
 
         private readonly CancellationToken _disposedCancellation;
 
-        private T _item;
+        private T? _item;
 
         public LensChannel()
         {

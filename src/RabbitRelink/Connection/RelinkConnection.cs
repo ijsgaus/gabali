@@ -135,7 +135,7 @@ internal class RelinkConnection : AsyncStateMachine<RelinkConnectionState>, IRel
 
     public Task<IModel> CreateModelAsync(CancellationToken cancellation)
     {
-        return _storage.PutAsync(conn => conn.CreateModel(), cancellation);
+        return _storage.PutAsync(conn => conn.CreateModel(), cancellation)!;
     }
 
     #endregion

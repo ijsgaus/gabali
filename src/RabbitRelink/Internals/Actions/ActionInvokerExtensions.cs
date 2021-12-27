@@ -11,7 +11,7 @@ namespace RabbitRelink.Internals.Actions
             return @this.InvokeAsync(action, CancellationToken.None);
         }
 
-        public static Task<T> InvokeAsync<TActor, T>(this IActionInvoker<TActor> @this, Func<TActor, T> action)
+        public static Task<T?> InvokeAsync<TActor, T>(this IActionInvoker<TActor> @this, Func<TActor, T> action)
         {
             return @this.InvokeAsync(action, CancellationToken.None);
         }

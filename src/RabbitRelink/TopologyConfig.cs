@@ -6,7 +6,7 @@ namespace RabbitRelink;
 /// <summary>
 /// Relink topology configuration
 /// </summary>
-public record RelinkTopologyConfig()
+public record TopologyConfig()
 {
     /// <summary>
     /// Retry topology configuration interval (default 10s)

@@ -54,7 +54,7 @@ namespace RabbitRelink.Connection
                 }
             };
 
-            _hosts = _hosts;
+            _hosts = hosts;
         }
 
         #endregion

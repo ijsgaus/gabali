@@ -11,7 +11,7 @@ namespace RabbitRelink.Internals.Actions
             _channel = channel ?? throw new ArgumentNullException(nameof(channel));
         }
 
-        public async Task<T> PutAsync<T>(Func<TActor, T> action, CancellationToken cancellation)
+        public async Task<T?> PutAsync<T>(Func<TActor, T?> action, CancellationToken cancellation)
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -21,7 +21,7 @@ namespace RabbitRelink.Internals.Actions
             await _channel.PutAsync(item)
                 .ConfigureAwait(false);
 
-            return (T) await item
+            return (T?) await item
                 .Completion
                 .ConfigureAwait(false);
         }

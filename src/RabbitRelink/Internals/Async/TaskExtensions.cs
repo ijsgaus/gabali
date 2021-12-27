@@ -58,7 +58,7 @@ namespace RabbitRelink.Internals.Async
                 return Task.FromResult<object>(null!);
 
             var tcs = new TaskCompletionSource<object>();
-            token.Register(() => tcs.TrySetResult(null));
+            token.Register(() => tcs.TrySetResult(default!));
             return tcs.Task;
         }
     }
