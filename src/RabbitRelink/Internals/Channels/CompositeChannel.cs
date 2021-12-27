@@ -4,7 +4,7 @@ using RabbitRelink.Internals.Queues;
 namespace RabbitRelink.Internals.Channels
 {
     internal class CompositeChannel<T> : ICompositeChannel<T>
-        where T : class, IChannelItem
+        where T : class?, IChannelItem
     {
         private readonly RetryQueue<T> _retryQueue = new RetryQueue<T>();
         private readonly IChannel<T> _channel;

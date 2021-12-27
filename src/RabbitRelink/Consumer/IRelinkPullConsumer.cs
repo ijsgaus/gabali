@@ -11,7 +11,7 @@ namespace RabbitRelink.Consumer
     ///     Represents RabbitMQ message consumer which manage internal message queue
     ///     and implements semantic
     /// </summary>
-    public interface IRelinkPullConsumer<T> : IDisposable where T: class
+    public interface IRelinkPullConsumer<T> : IDisposable where T: class?
     {
         /// <summary>
         ///     Consumer Id

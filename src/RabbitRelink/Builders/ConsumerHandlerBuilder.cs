@@ -6,7 +6,7 @@ using RabbitRelink.Topology;
 
 namespace RabbitRelink;
 
-internal class ConsumerHandlerBuilder<T> : IConsumerHandlerBuilder<T> where T : class
+internal class ConsumerHandlerBuilder<T> : IConsumerHandlerBuilder<T> where T : class?
 {
     private readonly Func<ConsumerHandler<T>, IRelinkConsumer> _factory;
 
@@ -16,6 +16,6 @@ internal class ConsumerHandlerBuilder<T> : IConsumerHandlerBuilder<T> where T : 
     public IRelinkConsumer Handler(ConsumerHandler<T> handler)
         => _factory(handler);
 
-    public IConsumerHandlerBuilder<TOut> Middleware<TOut>(ConsumerMiddleware<TOut, T> middleware) where TOut : class
+    public IConsumerHandlerBuilder<TOut> Middleware<TOut>(ConsumerMiddleware<TOut, T> middleware) where TOut : class?
         => new ConsumerHandlerBuilder<TOut>(handler => _factory(middleware(handler)));
 }

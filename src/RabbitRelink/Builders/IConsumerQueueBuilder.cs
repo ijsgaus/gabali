@@ -4,6 +4,6 @@ namespace RabbitRelink;
 
 public interface IConsumerQueueBuilder
 {
-    IConsumerConfigBuilder<byte[]> Queue(Func<ITopologyCommander, Task<IQueue>> topologyHandler);
+    IConsumerConfigBuilder<byte[]?> Queue(Func<ITopologyCommander, Task<IQueue>> topologyHandler);
 }
 

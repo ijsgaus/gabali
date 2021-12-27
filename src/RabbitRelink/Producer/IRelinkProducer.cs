@@ -9,7 +9,7 @@ namespace RabbitRelink.Producer;
 /// <summary>
 /// Represents RabbitMQ message producer
 /// </summary>
-public interface IRelinkProducer<T> : IDisposable where T: class
+public interface IRelinkProducer<T> : IDisposable where T: class?
 {
     #region Properties
 

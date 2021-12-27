@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RabbitRelink;
 using RabbitRelink.Consumer;
 using RabbitRelink.Logging.Microsoft;
+using RabbitRelink.Serialization.Abstractions;
 using RabbitRelink.Topology;
 
 namespace Samples;
@@ -35,13 +36,13 @@ public class Samples
                 Parallelism = 1,
                 PrefetchCount = 5,
             })
+            .UsePlainText()
             .Handler(msg =>
             {
-                var str = Encoding.UTF8.GetString(msg.Body);
-                logger.LogInformation("RECEIVED: {Message}", str);
+                logger.LogInformation("RECEIVED: {Message}", msg.Body);
                 logger.LogInformation("PROPERTIES: {Properties}", msg.Properties);
                 logger.LogInformation("RECEIVED_PROPERTIES: {ReceivedProperties}", msg.ReceiveProperties);
-                logger.LogInformation("EQUAL: {Ok}", str == "OK");
+                logger.LogInformation("EQUAL: {Ok}", msg.Body == "OK");
                 _ = Task.Delay(200).ContinueWith(_ => source.TrySetResult());
                 return Task.FromResult(Acknowledge.Ack);
             });
@@ -49,8 +50,9 @@ public class Samples
         using var producer = relink.Producer()
             .Exchange(cfg => cfg.ExchangeDeclare("test-exchange", ExchangeType.Direct, true, true))
             .Configure(p => p with {ConfirmsMode = true})
+            .UsePlainText()
             .Build();
-        await producer.PublishAsync(Encoding.UTF8.GetBytes("OK"), p => p, p => p with {RoutingKey = "test.key"});
+        await producer.PublishAsync("OK", p => p, p => p with {RoutingKey = "test.key"});
         await source.Task;
     }
 }

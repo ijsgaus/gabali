@@ -11,7 +11,7 @@ using RabbitRelink.Topology;
 
 namespace RabbitRelink.Consumer
 {
-    internal class RelinkPullConsumer<T> : IRelinkPullConsumer<T> where T: class
+    internal class RelinkPullConsumer<T> : IRelinkPullConsumer<T> where T: class?
     {
         public PullConsumerConfig Config { get; }
 

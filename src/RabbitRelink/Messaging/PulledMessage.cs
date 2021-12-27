@@ -8,7 +8,7 @@ using RabbitRelink.Consumer;
 namespace RabbitRelink.Messaging
 {
     public record PulledMessage<TBody>(TBody Body, MessageProperties Properties, ReceiveProperties ReceiveProperties,
-        CancellationToken Cancellation, TaskCompletionSource<Acknowledge> Completion) : ConsumedMessage<TBody>(Body, Properties, ReceiveProperties, Cancellation) where TBody : class
+        CancellationToken Cancellation, TaskCompletionSource<Acknowledge> Completion) : ConsumedMessage<TBody>(Body, Properties, ReceiveProperties, Cancellation) where TBody : class?
     {
         public void Ack() => Completion.TrySetResult(Acknowledge.Ack);
 

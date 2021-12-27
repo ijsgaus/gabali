@@ -8,6 +8,6 @@ var services = new ServiceCollection()
         builder.SetMinimumLevel(LogLevel.Trace)
             .AddConsole())
     .BuildServiceProvider();
-var factory = services.GetService<ILoggerFactory>();
+var factory = services.GetRequiredService<ILoggerFactory>();
 await Samples.Samples.SimplePublishSubscribe(factory);
 

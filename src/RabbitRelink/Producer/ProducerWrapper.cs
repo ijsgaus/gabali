@@ -4,8 +4,8 @@ using RabbitRelink.Middlewares;
 namespace RabbitRelink.Producer;
 
 internal class ProducerWrapper<TIn, TOut>  : IRelinkProducer<TOut>
-    where TOut : class
-    where TIn : class
+    where TOut : class?
+    where TIn : class?
 {
     private readonly IRelinkProducer<TIn> _inner;
     private readonly ProducerMiddleware<TIn, TOut> _middleware;

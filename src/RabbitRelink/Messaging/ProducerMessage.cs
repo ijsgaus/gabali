@@ -7,7 +7,7 @@ using RabbitRelink.Internals.Channels;
 namespace RabbitRelink.Messaging
 {
     public record ProducerMessage<T>(T Body, MessageProperties Properties, PublishProperties PublishProperties)
-        : Message<T>(Body, Properties), IChannelItem where T : class
+        : Message<T>(Body, Properties), IChannelItem where T : class?
     {
         private readonly TaskCompletionSource<object?> _tcs =
             new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);

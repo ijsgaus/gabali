@@ -3,4 +3,4 @@ using RabbitRelink.Messaging;
 
 namespace RabbitRelink.Middlewares;
 
-public delegate Task<Acknowledge> ConsumerHandler<T>(ConsumedMessage<T> msg) where T : class;
+public delegate Task<Acknowledge> ConsumerHandler<T>(ConsumedMessage<T> msg) where T : class?;

@@ -30,7 +30,7 @@ public class Simple
         var services = new ServiceCollection()
             .AddLogging(builder => builder.AddConsole())
             .BuildServiceProvider();
-        var factory = services.GetService<ILoggerFactory>();
+        var factory = services.GetRequiredService<ILoggerFactory>();
         var source = new TaskCompletionSource();
         using var relink = Relink.Create("amqp://admin:admin@localhost:5672")
             .Configure(cfg =>
@@ -56,7 +56,7 @@ public class Simple
             })
             .Handler(msg =>
             {
-                var str = Encoding.UTF8.GetString(msg.Body);
+                var str = Encoding.UTF8.GetString(msg.Body ?? Array.Empty<byte>());
                 _outputHelper.WriteLine("RECEIVED: {0}", str);
                 _outputHelper.WriteLine("PROPERTIES: {0}", msg.Properties);
                 _outputHelper.WriteLine("RECIVED_PROPERTIES: {0}", msg.ReceiveProperties);

@@ -18,7 +18,7 @@ namespace RabbitRelink.Consumer
     internal class RelinkConsumer : AsyncStateMachine<RelinkConsumerState>, IRelinkConsumerInternal, IRelinkChannelHandler
     {
         public PushConsumerConfig Config { get; }
-        private readonly ConsumerHandler<byte[]> _handler;
+        private readonly ConsumerHandler<byte[]?> _handler;
         private readonly IRelinkChannel _channel;
         private readonly IRelinkLogger _logger;
 
@@ -37,13 +37,13 @@ namespace RabbitRelink.Consumer
         private volatile CancellationTokenSource? _consumerCancellationTokenSource;
 
         private readonly string _appId;
-        private readonly ActionBlock<(ConsumedMessage<byte[]> msg, ulong deliveryTag)> _actionBlock;
+        private readonly ActionBlock<(ConsumedMessage<byte[]?> msg, ulong deliveryTag)> _actionBlock;
 
         public RelinkConsumer(
             PushConsumerConfig config,
             IRelinkChannel channel,
             Func<ITopologyCommander, Task<IQueue>> topologyHandler,
-            ConsumerHandler<byte[]> handler) : base(RelinkConsumerState.Init)
+            ConsumerHandler<byte[]?> handler) : base(RelinkConsumerState.Init)
         {
             Config = config;
 
@@ -59,7 +59,7 @@ namespace RabbitRelink.Consumer
             _channel.Disposed += ChannelOnDisposed;
 
             _channel.Initialize(this);
-            _actionBlock = new ActionBlock<(ConsumedMessage<byte[]> msg, ulong deliveryTag)>(HandleMessageAsync,
+            _actionBlock = new ActionBlock<(ConsumedMessage<byte[]?> msg, ulong deliveryTag)>(HandleMessageAsync,
                 new ExecutionDataflowBlockOptions
                 {
                     EnsureOrdered = true,
@@ -370,7 +370,7 @@ namespace RabbitRelink.Consumer
 
                 var token = _consumerCancellationTokenSource?.Token ?? throw new NullReferenceException($"{_consumerCancellationTokenSource} not initialized");
 
-                var msg = new ConsumedMessage<byte[]>(e.Body.ToArray(), props, receiveProps, token);
+                var msg = new ConsumedMessage<byte[]?>(e.Body.ToArray(), props, receiveProps, token);
 
                 HandleMessageAsync(msg, e.DeliveryTag);
             }
@@ -393,7 +393,7 @@ namespace RabbitRelink.Consumer
             }
         }
 
-        private void HandleMessageAsync(ConsumedMessage<byte[]> msg, ulong deliveryTag)
+        private void HandleMessageAsync(ConsumedMessage<byte[]?> msg, ulong deliveryTag)
         {
             var cancellation = msg.Cancellation;
 
@@ -429,7 +429,7 @@ namespace RabbitRelink.Consumer
                     );
         }
 
-        private async Task HandleMessageAsync((ConsumedMessage<byte[]> msg, ulong deliveryTag) param)
+        private async Task HandleMessageAsync((ConsumedMessage<byte[]?> msg, ulong deliveryTag) param)
         {
             var (msg, deliveryTag) = param;
             var cancellation = msg.Cancellation;

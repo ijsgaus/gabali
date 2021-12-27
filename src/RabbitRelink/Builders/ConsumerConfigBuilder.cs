@@ -5,7 +5,7 @@ using RabbitRelink.Topology;
 
 namespace RabbitRelink;
 
-internal class ConsumerConfigBuilder<TIn> : IConsumerConfigBuilder<TIn> where TIn : class
+internal class ConsumerConfigBuilder<TIn> : IConsumerConfigBuilder<TIn> where TIn : class?
 {
     private readonly Func<PushConsumerConfig, ConsumerHandler<TIn>, IRelinkConsumer> _factory;
 
@@ -20,7 +20,7 @@ internal class ConsumerConfigBuilder<TIn> : IConsumerConfigBuilder<TIn> where TI
         return new RelinkPullConsumer<TIn>(config, _factory);
     }
 
-    public IConsumerConfigBuilder<TOut> Middleware<TOut>(ConsumerMiddleware<TOut, TIn> middleware) where TOut : class
+    public IConsumerConfigBuilder<TOut> Middleware<TOut>(ConsumerMiddleware<TOut, TIn> middleware) where TOut : class?
         => new ConsumerConfigBuilder<TOut>((cfg, handler) => _factory(cfg, middleware(handler)));
 
     public IConsumerHandlerBuilder<TIn> Push(Func<PushConsumerConfig, PushConsumerConfig>? configure = null)
