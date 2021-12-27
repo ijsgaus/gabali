@@ -1,36 +1,17 @@
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using RabbitRelink;
 using RabbitRelink.Consumer;
 using RabbitRelink.Logging.Microsoft;
 using RabbitRelink.Topology;
-using Xunit;
-using Xunit.Abstractions;
 
-namespace TestSamples;
+namespace Samples;
 
-public class Simple
+public class Samples
 {
-    private readonly ITestOutputHelper _outputHelper;
-
-    public Simple(ITestOutputHelper outputHelper)
+    public static async Task SimplePublishSubscribe(ILoggerFactory factory)
     {
-        _outputHelper = outputHelper;
-    }
-
-
-    [Fact]
-    public async Task ConnectPublishSubscribe()
-    {
-        var services = new ServiceCollection()
-            .AddLogging(builder => builder.AddConsole())
-            .BuildServiceProvider();
-        var factory = services.GetService<ILoggerFactory>();
+        var logger = factory.CreateLogger<Samples>();
         var source = new TaskCompletionSource();
         using var relink = Relink.Create("amqp://admin:admin@localhost:5672")
             .Configure(cfg =>
@@ -57,11 +38,11 @@ public class Simple
             .Handler(msg =>
             {
                 var str = Encoding.UTF8.GetString(msg.Body);
-                _outputHelper.WriteLine("RECEIVED: {0}", str);
-                _outputHelper.WriteLine("PROPERTIES: {0}", msg.Properties);
-                _outputHelper.WriteLine("RECIVED_PROPERTIES: {0}", msg.ReceiveProperties);
-                Assert.Equal("OK", str);
-                _ = Task.Delay(200).ContinueWith(p => source.TrySetResult());
+                logger.LogInformation("RECEIVED: {Message}", str);
+                logger.LogInformation("PROPERTIES: {Properties}", msg.Properties);
+                logger.LogInformation("RECEIVED_PROPERTIES: {ReceivedProperties}", msg.ReceiveProperties);
+                logger.LogInformation("EQUAL: {Ok}", str == "OK");
+                _ = Task.Delay(200).ContinueWith(_ => source.TrySetResult());
                 return Task.FromResult(Acknowledge.Ack);
             });
         await consumer.WaitReadyAsync();
