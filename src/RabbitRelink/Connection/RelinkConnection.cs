@@ -7,6 +7,8 @@ using RabbitRelink.Internals.Async;
 using RabbitRelink.Internals.Channels;
 using RabbitRelink.Internals.Lens;
 using RabbitRelink.Logging;
+using RabbitRelink.Messaging;
+using RabbitRelink.Middlewares;
 
 namespace RabbitRelink.Connection;
 

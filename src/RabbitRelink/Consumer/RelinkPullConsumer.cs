@@ -2,14 +2,16 @@
 
 #endregion
 
+using System.Collections.Immutable;
 using System.Threading.Channels;
 using RabbitRelink.Connection;
 using RabbitRelink.Messaging;
+using RabbitRelink.Middlewares;
 using RabbitRelink.Topology;
 
 namespace RabbitRelink.Consumer
 {
-    internal class RelinkPullConsumer : IRelinkPullConsumer
+    internal class RelinkPullConsumer<T> : IRelinkPullConsumer<T> where T: class
     {
         public PullConsumerConfig Config { get; }
 
@@ -18,17 +20,13 @@ namespace RabbitRelink.Consumer
         private readonly IRelinkConsumer _consumer;
         private readonly object _sync = new object();
         private bool _disposed;
-        private readonly Channel<PulledMessage<byte[]>> _channel;
+        private readonly Channel<PulledMessage<T>> _channel;
 
         #endregion
 
         #region Ctor
 
-        public RelinkPullConsumer(
-            PullConsumerConfig config,
-            IRelinkChannel channel,
-            Func<ITopologyCommander, Task<IQueue>> topologyHandler
-        )
+        public RelinkPullConsumer(PullConsumerConfig config, Func<PushConsumerConfig, ConsumerHandler<T>, IRelinkConsumer> factory)
         {
             Config = config;
             var pushConfig = new PushConsumerConfig
@@ -44,9 +42,10 @@ namespace RabbitRelink.Consumer
                 CancelOnHaFailover = Config.CancelOnHaFailover,
             };
             _channel = Config.BoundChannel == PullConsumerConfig.UNBOUND
-                ? Channel.CreateUnbounded<PulledMessage<byte[]>>()
-                : Channel.CreateBounded<PulledMessage<byte[]>>(Config.BoundChannel);
-            _consumer = new RelinkConsumer(pushConfig, channel, topologyHandler, OnMessageReceived);
+                ? Channel.CreateUnbounded<PulledMessage<T>>()
+                : Channel.CreateBounded<PulledMessage<T>>(Config.BoundChannel);
+            ConsumerHandler<T> handler = OnMessageReceived;
+            _consumer = factory(pushConfig, handler);
         }
 
         #endregion
@@ -59,10 +58,10 @@ namespace RabbitRelink.Consumer
 
         public Guid Id => _consumer.Id;
 
-        public Task WaitReadyAsync(CancellationToken? cancellation = null)
+        public Task WaitReadyAsync(CancellationToken cancellation = default)
             => _consumer.WaitReadyAsync(cancellation);
 
-        public ChannelReader<PulledMessage<byte[]>> Receiver => _channel.Reader;
+        public ChannelReader<PulledMessage<T>> Receiver => _channel.Reader;
 
         private void OnStateChanged(RelinkConsumerState oldState, RelinkConsumerState newsState)
         {
@@ -74,10 +73,10 @@ namespace RabbitRelink.Consumer
             Config.StateChanged(oldState, newsState);
         }
 
-        private async Task<Acknowledge> OnMessageReceived(ConsumedMessage<byte[]> message)
+        private async Task<Acknowledge> OnMessageReceived(ConsumedMessage<T> message)
         {
             var completeSource = new TaskCompletionSource<Acknowledge>();
-            var msg = new PulledMessage<byte[]>(message, completeSource);
+            var msg = new PulledMessage<T>(message, completeSource);
             await _channel.Writer.WriteAsync(msg, msg.Cancellation);
             return await completeSource.Task;
         }

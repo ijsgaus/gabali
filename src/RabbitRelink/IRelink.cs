@@ -31,4 +31,5 @@ public interface IRelink : IDisposable
 
     ITopologyBuilder Topology();
     IConsumerQueueBuilder Consumer();
+    IProducerExchangeBuilder Producer();
 }

@@ -15,31 +15,25 @@ public interface IRelinkBuilder
     IRelinkBuilder Middleware(IMiddleware middleware, params IMiddleware[] middlewares)
         => Middleware(middleware.NextConsumer,
                 middlewares
-                    .Select(p => p.NextConsumer)
-                    .Cast<ConsumerMiddleware<byte[], byte[]>>()
+                    .Select<IConsumerMiddleware<byte[], byte[]>, ConsumerMiddleware<byte[], byte[]>>(p => p.NextConsumer)
                     .ToArray())
             .Middleware(middleware.NextProducer,
                 middlewares
-                    .Select(p => p.NextProducer)
-                    .Cast<ProducerMiddleware<byte[], byte[]>>()
+                    .Select<IProducerMiddleware<byte[], byte[]>, ProducerMiddleware<byte[], byte[]>>(p => p.NextProducer)
                     .ToArray());
 
     IRelinkBuilder Middleware(IProducerMiddleware<byte[], byte[]> middleware,
         params IProducerMiddleware<byte[], byte[]>[] middlewares)
         => Middleware(middleware.NextProducer,
             middlewares
-                .Select(p => p.NextProducer)
-                .Cast<ProducerMiddleware<byte[], byte[]>>()
+                .Select<IProducerMiddleware<byte[], byte[]>, ProducerMiddleware<byte[], byte[]>>(p => p.NextProducer)
                 .ToArray());
 
     IRelinkBuilder Middleware(IConsumerMiddleware<byte[], byte[]> middleware,
         params IConsumerMiddleware<byte[], byte[]>[] middlewares)
         => Middleware(middleware.NextConsumer,
             middlewares
-                .Select(p => p.NextConsumer)
-                .Cast<ConsumerMiddleware<byte[], byte[]>>()
+                .Select<IConsumerMiddleware<byte[], byte[]>, ConsumerMiddleware<byte[], byte[]>>(p => p.NextConsumer)
                 .ToArray());
-
-
     IRelink Build();
 }

@@ -2,6 +2,8 @@
 
 #endregion
 
+using RabbitRelink.Middlewares;
+
 namespace RabbitRelink.Consumer
 {
     /// <summary>
@@ -22,6 +24,6 @@ namespace RabbitRelink.Consumer
         /// <summary>
         ///     Waits for consumer ready
         /// </summary>
-        Task WaitReadyAsync(CancellationToken? cancellation = null);
+        Task WaitReadyAsync(CancellationToken cancellation = default);
     }
 }

@@ -1,9 +1,12 @@
-﻿using RabbitRelink.Producer;
+﻿using RabbitRelink.Middlewares;
+using RabbitRelink.Producer;
 
 namespace RabbitRelink;
 
 public interface IProducerConfigBuilder
 {
-    IRelinkProducer Configure(Func<ProducerConfig, ProducerConfig> configure);
-    IRelinkProducer Build();
+    IProducerMiddlewareBuilder<byte[]> Configure(Func<ProducerConfig, ProducerConfig> configure);
+
+    IProducerMiddlewareBuilder<TOut> Middleware<TOut>(ProducerMiddleware<byte[], TOut> middleware) where TOut : class;
+    IRelinkProducer<byte[]> Build();
 }

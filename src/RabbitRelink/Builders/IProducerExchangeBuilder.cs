@@ -4,5 +4,5 @@ namespace RabbitRelink;
 
 public interface IProducerExchangeBuilder
 {
-    IProducerConfigBuilder Exchange(Func<ITopologyCommander, Func<IExchange>> topologyConfig);
+    IProducerConfigBuilder Exchange(Func<ITopologyCommander, Task<IExchange>> topologyConfig);
 }

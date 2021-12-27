@@ -9,6 +9,7 @@ using RabbitRelink.Internals.Channels;
 using RabbitRelink.Internals.Lens;
 using RabbitRelink.Logging;
 using RabbitRelink.Messaging;
+using RabbitRelink.Middlewares;
 using RabbitRelink.Topology;
 using RabbitRelink.Topology.Internal;
 
@@ -17,7 +18,7 @@ namespace RabbitRelink.Consumer
     internal class RelinkConsumer : AsyncStateMachine<RelinkConsumerState>, IRelinkConsumerInternal, IRelinkChannelHandler
     {
         public PushConsumerConfig Config { get; }
-        private readonly Func<ConsumedMessage<byte[]>, Task<Acknowledge>> _handler;
+        private readonly ConsumerHandler<byte[]> _handler;
         private readonly IRelinkChannel _channel;
         private readonly IRelinkLogger _logger;
 
@@ -42,7 +43,7 @@ namespace RabbitRelink.Consumer
             PushConsumerConfig config,
             IRelinkChannel channel,
             Func<ITopologyCommander, Task<IQueue>> topologyHandler,
-            Func<ConsumedMessage<byte[]>, Task<Acknowledge>> handler) : base(RelinkConsumerState.Init)
+            ConsumerHandler<byte[]> handler) : base(RelinkConsumerState.Init)
         {
             Config = config;
 
@@ -69,12 +70,12 @@ namespace RabbitRelink.Consumer
         public Guid Id { get; } = Guid.NewGuid();
 
 
-        public Task WaitReadyAsync(CancellationToken? cancellation = null)
+        public Task WaitReadyAsync(CancellationToken cancellation = default)
         {
             return _readyCompletion.Task
                 .ContinueWith(
                     t => t.Result,
-                    cancellation ?? CancellationToken.None,
+                    cancellation,
                     TaskContinuationOptions.RunContinuationsAsynchronously,
                     TaskScheduler.Current
                 );
@@ -419,8 +420,13 @@ namespace RabbitRelink.Consumer
                 );
                 return;
             }
-            _actionBlock.Post((msg, deliveryTag));
-
+            if(!_actionBlock.Post((msg, deliveryTag)))
+                Task.FromResult(Acknowledge.Requeue)
+                    .ContinueWith(t => OnMessageHandledAsync(t, deliveryTag, cancellation),
+                        cancellation,
+                        TaskContinuationOptions.ExecuteSynchronously,
+                        TaskScheduler.Current
+                    );
         }
 
         private async Task HandleMessageAsync((ConsumedMessage<byte[]> msg, ulong deliveryTag) param)

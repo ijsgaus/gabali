@@ -28,7 +28,7 @@ namespace RabbitRelink.Connection
         /// <summary>
         ///     Called when channel disposed
         /// </summary>
-        event EventHandler Disposed;
+        event EventHandler? Disposed;
 
         /// <summary>
         /// Initializes channel

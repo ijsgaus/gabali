@@ -11,7 +11,7 @@ namespace RabbitRelink.Consumer
     ///     Represents RabbitMQ message consumer which manage internal message queue
     ///     and implements semantic
     /// </summary>
-    public interface IRelinkPullConsumer : IDisposable
+    public interface IRelinkPullConsumer<T> : IDisposable where T: class
     {
         /// <summary>
         ///     Consumer Id
@@ -26,11 +26,11 @@ namespace RabbitRelink.Consumer
         /// <summary>
         ///     Waits for consumer ready
         /// </summary>
-        Task WaitReadyAsync(CancellationToken? cancellation = null);
+        Task WaitReadyAsync(CancellationToken cancellation = default);
 
         /// <summary>
         /// Receive message channel reader
         /// </summary>
-        ChannelReader<PulledMessage<byte[]>> Receiver { get; }
+        ChannelReader<PulledMessage<T>> Receiver { get; }
     }
 }

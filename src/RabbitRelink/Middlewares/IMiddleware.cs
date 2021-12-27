@@ -1,6 +1,5 @@
 ﻿namespace RabbitRelink.Middlewares;
 
-public class IMiddleware
+public interface IMiddleware : IConsumerMiddleware<byte[], byte[]>, IProducerMiddleware<byte[], byte[]>
 {
-    
 }
