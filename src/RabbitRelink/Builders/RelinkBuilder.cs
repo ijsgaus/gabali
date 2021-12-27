@@ -25,7 +25,5 @@ internal record RelinkBuilder(Uri Uri) : IRelinkBuilder
         => this with {ProducerMiddlewares = ProducerMiddlewares.Add(middleware).AddRange(middlewares)};
 
     IRelink IRelinkBuilder.Build()
-    {
-        throw new NotImplementedException();
-    }
+        => new Relink(Uri, Config, Hosts, ProducerMiddlewares, ConsumerMiddlewares);
 }

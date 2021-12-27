@@ -4,6 +4,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6258FF66-710
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitRelink", "src\RabbitRelink\RabbitRelink.csproj", "{F7D4529D-5311-49E5-8040-F2BED9B952CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSamples", "src\TestSamples\TestSamples.csproj", "{09CDF51E-3C47-4327-8522-0CD1C68CC0ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -11,11 +13,16 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F7D4529D-5311-49E5-8040-F2BED9B952CF} = {6258FF66-710C-4AD3-A8E2-8705E03D5B4A}
+		{09CDF51E-3C47-4327-8522-0CD1C68CC0ED} = {6258FF66-710C-4AD3-A8E2-8705E03D5B4A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F7D4529D-5311-49E5-8040-F2BED9B952CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F7D4529D-5311-49E5-8040-F2BED9B952CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7D4529D-5311-49E5-8040-F2BED9B952CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7D4529D-5311-49E5-8040-F2BED9B952CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09CDF51E-3C47-4327-8522-0CD1C68CC0ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09CDF51E-3C47-4327-8522-0CD1C68CC0ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09CDF51E-3C47-4327-8522-0CD1C68CC0ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09CDF51E-3C47-4327-8522-0CD1C68CC0ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

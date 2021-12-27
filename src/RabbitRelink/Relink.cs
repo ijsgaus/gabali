@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Dynamic;
 using RabbitRelink.Connection;
 using RabbitRelink.Messaging;
 using RabbitRelink.Middlewares;
@@ -16,6 +17,13 @@ public class Relink : IRelink
     public Uri Uri => _connection.Uri;
     public IImmutableSet<string> Hosts => _connection.Hosts;
     public RelinkConfig Config => _connection.Config;
+
+
+    public static IRelinkBuilder Create(Uri uri)
+        => new RelinkBuilder(uri);
+
+    public static IRelinkBuilder Create(string uri)
+        => Create(new Uri(uri));
 
 
     internal Relink(Uri uri, RelinkConfig config, IImmutableSet<string> hosts,
