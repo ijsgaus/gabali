@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    hostname: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - '4369:4369'
+      - '5672:5672'
+      - '25672:25672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=admin
+      - RABBITMQ_SECURE_PASSWORD=yes
+    volumes:
+    #  - './data:/bitnami'
+      - './data:/var/lib/rabbitmq'
+    restart: unless-stopped
