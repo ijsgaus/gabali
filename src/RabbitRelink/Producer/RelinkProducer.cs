@@ -35,8 +35,8 @@ namespace RabbitRelink.Producer
 
         private readonly IRelinkLogger _logger;
 
-        private readonly CompositeChannel<ProducerMessage<byte[]>> _messageQueue =
-            new(new LensChannel<ProducerMessage<byte[]>>());
+        private readonly CompositeChannel<ProducerMessage<byte[]?>> _messageQueue =
+            new(new LensChannel<ProducerMessage<byte[]?>>());
 
         private readonly object _sync = new object();
 
@@ -230,7 +230,7 @@ namespace RabbitRelink.Producer
                 );
         }
 
-        public Task PublishAsync(byte[] body, Func<MessageProperties, MessageProperties>? configureProperties = null, Func<PublishProperties, PublishProperties>? configurePublish = null,
+        public Task PublishAsync(byte[]? body, Func<Properties, Properties>? configureProperties = null, Func<PublishProperties, PublishProperties>? configurePublish = null,
             CancellationToken cancellation = default)
         {
             if (State == RelinkProducerState.Disposed)
@@ -243,7 +243,7 @@ namespace RabbitRelink.Producer
             if (publishProps.Mandatory == true && !Config.ConfirmsMode)
                 throw new NotSupportedException("Mandatory without ConfirmsMode not supported");
 
-            var msgProperties = new MessageProperties
+            var msgProperties = new Properties
             {
                 AppId = _appId,
                 UserId = _channel.Connection.UserId,
@@ -258,7 +258,7 @@ namespace RabbitRelink.Producer
 
 
 
-            var msg = new ProducerMessage<byte[]>(body, msgProperties, publishProps)
+            var msg = new ProducerMessage<byte[]?>(body, msgProperties, publishProps)
             {
                 Cancellation = cancellation
             };
@@ -314,7 +314,7 @@ namespace RabbitRelink.Producer
         {
             while (!cancellation.IsCancellationRequested)
             {
-                ProducerMessage<byte[]> message;
+                ProducerMessage<byte[]?> message;
                 try
                 {
                     message = _messageQueue.Wait(cancellation);

@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RabbitRelink.Logging.Microsoft\RabbitRelink.Logging.Microsoft.csproj" />
+      <ProjectReference Include="..\RabbitRelink.Serialization.Abstractions\RabbitRelink.Serialization.Abstractions.csproj" />
       <ProjectReference Include="..\RabbitRelink\RabbitRelink.csproj" />
     </ItemGroup>
 

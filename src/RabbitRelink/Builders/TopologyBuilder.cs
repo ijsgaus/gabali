@@ -6,7 +6,7 @@ internal class TopologyBuilder : TopologyHandlerBuilder, ITopologyBuilder
     {
     }
 
-    public ITopologyHandlerBuilder Configure(Func<TopologyConfig, TopologyConfig> configure)
+    public ITopologyHandlerBuilder Configure(Apply<TopologyConfig> configure)
     {
         return new TopologyHandlerBuilder(Relink, configure);
     }

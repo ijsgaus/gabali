@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using RabbitRelink.Connection;
 using RabbitRelink.Logging;
+using RabbitRelink.Messaging;
 
 namespace RabbitRelink;
 
@@ -20,9 +21,9 @@ public record RelinkConfig()
     public bool UseBackgroundThreadsForConnection { get; init; } = false;
 
     /// <summary>
-    /// Sets handler for state changes (default noop).
+    /// TODO: replace to observable property, <href>https://github.com/ijsgaus/rabbit-relink/issues/16</href>
     /// </summary>
-    public StateHandler<RelinkConnectionState> StateHandler { get; init; } = (_, _) => { };
+    public StateHandler<RelinkConnectionState> StateHandler { get; init; } = Fn.NoOp2;
 
     /// <summary>
     /// Name of connection (default - [starting assembly or exe file name]:[machine name]
@@ -45,10 +46,12 @@ public record RelinkConfig()
     public IRelinkLoggerFactory LoggerFactory { get; init; } = new NullLoggerFactory();
 
     /// <summary>
-    /// Sets <see cref="LinkMessageProperties.AppId" /> to all published messages, white spaces will be trimmed, must be
+    /// Sets <see cref="Properties.AppId" /> to all published messages, white spaces will be trimmed, must be
     /// not null or white space (default starting assembly or exe file name)
     /// </summary>
     public string AppId { get; init; } = GetAppName();
 
-    private static string GetAppName() => Assembly.GetEntryAssembly()?.FullName ?? Environment.GetCommandLineArgs()[0];
+    private static string GetAppName() =>
+        Assembly.GetEntryAssembly()?.GetName()?.Name
+        ?? Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]);
 }

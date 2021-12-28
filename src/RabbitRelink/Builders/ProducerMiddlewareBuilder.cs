@@ -3,7 +3,7 @@ using RabbitRelink.Producer;
 
 namespace RabbitRelink;
 
-internal class ProducerMiddlewareBuilder<TIn> : IProducerMiddlewareBuilder<TIn> where TIn : class
+internal class ProducerMiddlewareBuilder<TIn> : IProducerMiddlewareBuilder<TIn> where TIn : class?
 {
     private readonly Func<IRelinkProducer<TIn>> _factory;
 
@@ -14,7 +14,7 @@ internal class ProducerMiddlewareBuilder<TIn> : IProducerMiddlewareBuilder<TIn> 
     }
 
     public IProducerMiddlewareBuilder<TOut> Middleware<TOut>(ProducerMiddleware<TIn, TOut> middleware)
-        where TOut : class
+        where TOut : class?
         => new ProducerMiddlewareBuilder<TOut>(
             () => new ProducerWrapper<TIn, TOut>(_factory(), middleware)
         );

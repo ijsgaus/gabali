@@ -6,7 +6,7 @@ using RabbitRelink.Connection;
 
 namespace RabbitRelink.Producer
 {
-    internal interface IRelinkProducerInternal : IRelinkProducer<byte[]>
+    internal interface IRelinkProducerInternal : IRelinkProducer<byte[]?>
     {
         event EventHandler? Disposed;
 

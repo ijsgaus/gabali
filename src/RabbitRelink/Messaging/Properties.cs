@@ -5,7 +5,7 @@ namespace RabbitRelink.Messaging;
 /// <summary>
 /// Represents message properties
 /// </summary>
-public sealed record MessageProperties()
+public sealed record Properties()
 {
     #region Fields
 

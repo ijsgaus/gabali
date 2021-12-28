@@ -15,7 +15,7 @@ namespace RabbitRelink.Producer
 
         #endregion
 
-        public string Add(ProducerMessage<byte[]> message, ulong seq)
+        public string Add(ProducerMessage<byte[]?> message, ulong seq)
         {
             if (message == null)
                 throw new ArgumentNullException(nameof(message));
@@ -78,9 +78,9 @@ namespace RabbitRelink.Producer
             }
         }
 
-        public Queue<ProducerMessage<byte[]>> Reset()
+        public Queue<ProducerMessage<byte[]?>> Reset()
         {
-            var ret = new Queue<ProducerMessage<byte[]>>();
+            var ret = new Queue<ProducerMessage<byte[]?>>();
 
             lock (_sync)
             {
@@ -90,7 +90,7 @@ namespace RabbitRelink.Producer
 
                 foreach (var message in messages)
                 {
-                    ret.Enqueue(message);
+                    ret.Enqueue(message!);
                 }
 
                 _minSeq = 0;
@@ -163,7 +163,7 @@ namespace RabbitRelink.Producer
         {
             #region Ctor
 
-            public Item(ProducerMessage<byte[]> message, ulong seq)
+            public Item(ProducerMessage<byte[]?> message, ulong seq)
             {
                 Message = message;
                 Seq = seq;
@@ -174,7 +174,7 @@ namespace RabbitRelink.Producer
 
             #region Properties
 
-            public ProducerMessage<byte[]> Message { get; }
+            public ProducerMessage<byte[]?> Message { get; }
             public ulong Seq { get; }
             public string CorrelationId { get; }
 

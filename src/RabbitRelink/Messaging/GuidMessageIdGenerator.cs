@@ -10,7 +10,7 @@ namespace RabbitRelink.Messaging;
 public class GuidMessageIdGenerator : IMessageIdGenerator
 {
     /// <inheritdoc cref="IMessageIdGenerator"/>
-    public MessageProperties SetMessageId(byte[] body, MessageProperties properties,
+    public Properties SetMessageId(byte[]? body, Properties properties,
         PublishProperties publishProperties)
         => properties with {MessageId = Guid.NewGuid().ToString("D")};
 }

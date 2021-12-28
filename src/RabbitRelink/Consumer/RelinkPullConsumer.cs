@@ -11,7 +11,7 @@ using RabbitRelink.Topology;
 
 namespace RabbitRelink.Consumer
 {
-    internal class RelinkPullConsumer<T> : IRelinkPullConsumer<T> where T: class
+    internal class RelinkPullConsumer<T> : IRelinkPullConsumer<T> where T: class?
     {
         public PullConsumerConfig Config { get; }
 
@@ -26,7 +26,7 @@ namespace RabbitRelink.Consumer
 
         #region Ctor
 
-        public RelinkPullConsumer(PullConsumerConfig config, Func<PushConsumerConfig, ConsumerHandler<T>, IRelinkConsumer> factory)
+        public RelinkPullConsumer(PullConsumerConfig config, Func<PushConsumerConfig, DoConsume<T>, IRelinkConsumer> factory)
         {
             Config = config;
             var pushConfig = new PushConsumerConfig
@@ -44,7 +44,7 @@ namespace RabbitRelink.Consumer
             _channel = Config.BoundChannel == PullConsumerConfig.UNBOUND
                 ? Channel.CreateUnbounded<PulledMessage<T>>()
                 : Channel.CreateBounded<PulledMessage<T>>(Config.BoundChannel);
-            ConsumerHandler<T> handler = OnMessageReceived;
+            DoConsume<T> handler = OnMessageReceived;
             _consumer = factory(pushConfig, handler);
         }
 
