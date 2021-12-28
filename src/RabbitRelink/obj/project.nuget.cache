@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "fKcb5pDG+MhsaVv+5+EEIyTzjXDRo/Ndz9FFqLUwmXNDFiyyr0BU5lBKF/tNWQoI/rnb9WAulJ1ohyPGfOw+mg==",
+  "dgSpecHash": "pESrmzXHUU4LoqRsLP7lWDYTHtTWiuQ/EozVz/J+AMT+oqYL+OkAfv0VvXuLpY3vtz6KLGgFmQuCxKSNVtN76Q==",
   "success": true,
   "projectFilePath": "C:\\work\\rabbit-relink\\src\\RabbitRelink\\RabbitRelink.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\ijsga\\.nuget\\packages\\jetbrains.annotations\\2021.3.0\\jetbrains.annotations.2021.3.0.nupkg.sha512",
     "C:\\Users\\ijsga\\.nuget\\packages\\rabbitmq.client\\6.2.2\\rabbitmq.client.6.2.2.nupkg.sha512",
     "C:\\Users\\ijsga\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\ijsga\\.nuget\\packages\\system.threading.channels\\4.7.1\\system.threading.channels.4.7.1.nupkg.sha512"

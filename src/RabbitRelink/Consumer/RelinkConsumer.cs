@@ -18,7 +18,7 @@ namespace RabbitRelink.Consumer
     internal class RelinkConsumer : AsyncStateMachine<RelinkConsumerState>, IRelinkConsumerInternal, IRelinkChannelHandler
     {
         public PushConsumerConfig Config { get; }
-        private readonly ConsumerHandler<byte[]?> _handler;
+        private readonly DoConsume<byte[]?> _handler;
         private readonly IRelinkChannel _channel;
         private readonly IRelinkLogger _logger;
 
@@ -43,7 +43,7 @@ namespace RabbitRelink.Consumer
             PushConsumerConfig config,
             IRelinkChannel channel,
             Func<ITopologyCommander, Task<IQueue>> topologyHandler,
-            ConsumerHandler<byte[]?> handler) : base(RelinkConsumerState.Init)
+            DoConsume<byte[]?> handler) : base(RelinkConsumerState.Init)
         {
             Config = config;
 
@@ -345,7 +345,7 @@ namespace RabbitRelink.Consumer
         {
             try
             {
-                var props = new MessageProperties
+                var props = new Properties
                 {
                     AppId = e.BasicProperties.AppId,
                     ClusterId = e.BasicProperties.ClusterId,

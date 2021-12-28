@@ -8,5 +8,5 @@ public interface IMessageIdGenerator
     /// <summary>
     /// Set message id
     /// </summary>
-    MessageProperties SetMessageId(byte[]? body, MessageProperties properties, PublishProperties publishProperties);
+    Properties SetMessageId(byte[]? body, Properties properties, PublishProperties publishProperties);
 }

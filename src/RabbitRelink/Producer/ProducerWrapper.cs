@@ -25,7 +25,7 @@ internal class ProducerWrapper<TIn, TOut>  : IRelinkProducer<TOut>
     public Task WaitReadyAsync(CancellationToken cancellation = default)
         => _inner.WaitReadyAsync(cancellation);
 
-    public Task PublishAsync(TOut body, Func<MessageProperties, MessageProperties>? configureProperties = null,
+    public Task PublishAsync(TOut body, Func<Properties, Properties>? configureProperties = null,
         Func<PublishProperties, PublishProperties>? configurePublish = null,
         CancellationToken cancellation = default)
         => _middleware(_inner.PublishAsync)(body, configureProperties, configurePublish, cancellation);

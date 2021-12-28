@@ -10,8 +10,8 @@ namespace RabbitRelink;
 
 public class Relink : IRelink
 {
-    private readonly IImmutableList<ProducerMiddleware<byte[]?, byte[]?>> _producerMiddlewares;
-    private readonly IImmutableList<ConsumerMiddleware<byte[]?, byte[]?>> _consumerMiddlewares;
+    private readonly IImmutableList<ProducerMiddleware<byte[]>> _producerMiddlewares;
+    private readonly IImmutableList<ConsumerMiddleware<byte[]>> _consumerMiddlewares;
 
     private readonly IRelinkConnection _connection;
     public Uri Uri => _connection.Uri;
@@ -27,8 +27,8 @@ public class Relink : IRelink
 
 
     internal Relink(Uri uri, RelinkConfig config, IImmutableSet<string> hosts,
-        IImmutableList<ProducerMiddleware<byte[]?, byte[]?>> producerMiddlewares,
-        IImmutableList<ConsumerMiddleware<byte[]?, byte[]?>>  consumerMiddlewares)
+        IImmutableList<ProducerMiddleware<byte[]>> producerMiddlewares,
+        IImmutableList<ConsumerMiddleware<byte[]>>  consumerMiddlewares)
     {
         _producerMiddlewares = producerMiddlewares;
         _consumerMiddlewares = consumerMiddlewares;

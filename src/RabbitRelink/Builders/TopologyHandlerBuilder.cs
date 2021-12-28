@@ -6,9 +6,9 @@ namespace RabbitRelink;
 internal class TopologyHandlerBuilder : ITopologyHandlerBuilder
 {
     protected readonly Relink Relink;
-    private Func<TopologyConfig, TopologyConfig>? _configure;
+    private Apply<TopologyConfig>? _configure;
 
-    public TopologyHandlerBuilder(Relink relink, Func<TopologyConfig, TopologyConfig>? configure)
+    internal TopologyHandlerBuilder(Relink relink, Apply<TopologyConfig>? configure)
     {
         Relink = relink;
         _configure = configure;
@@ -16,8 +16,7 @@ internal class TopologyHandlerBuilder : ITopologyHandlerBuilder
 
     public IRelinkTopology Handler(Func<ITopologyCommander, Task> handler)
     {
-        _configure ??= (p => p);
-        var config = _configure(new TopologyConfig());
+        var config = (_configure ?? Fn.Id)(new TopologyConfig());
         return new RelinkTopology(
             Relink.CreateChannel(config.OnChannelStateChanged, config.RecoveryInterval),
             config,

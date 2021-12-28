@@ -9,7 +9,7 @@ internal static class Middlewares
         {
             var serialized = await serializer.SerializeAsync(body, cancellation);
 
-            MessageProperties Properties(MessageProperties props)
+            Properties Properties(Properties props)
             {
                 props = (properties ?? (p => p))(props);
                 return props with {Type = discriminator, ContentType = serializer.MediaType.ToString()};

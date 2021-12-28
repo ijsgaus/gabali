@@ -7,5 +7,5 @@ namespace RabbitRelink;
 public interface IConsumerHandlerBuilder<T> where T: class?
 {
     IConsumerHandlerBuilder<TOut> Middleware<TOut>(ConsumerMiddleware<TOut, T> middleware) where TOut : class?;
-    IRelinkConsumer Handler(ConsumerHandler<T> handler);
+    IRelinkConsumer Handler(DoConsume<T> handler);
 }

@@ -230,7 +230,7 @@ namespace RabbitRelink.Producer
                 );
         }
 
-        public Task PublishAsync(byte[]? body, Func<MessageProperties, MessageProperties>? configureProperties = null, Func<PublishProperties, PublishProperties>? configurePublish = null,
+        public Task PublishAsync(byte[]? body, Func<Properties, Properties>? configureProperties = null, Func<PublishProperties, PublishProperties>? configurePublish = null,
             CancellationToken cancellation = default)
         {
             if (State == RelinkProducerState.Disposed)
@@ -243,7 +243,7 @@ namespace RabbitRelink.Producer
             if (publishProps.Mandatory == true && !Config.ConfirmsMode)
                 throw new NotSupportedException("Mandatory without ConfirmsMode not supported");
 
-            var msgProperties = new MessageProperties
+            var msgProperties = new Properties
             {
                 AppId = _appId,
                 UserId = _channel.Connection.UserId,

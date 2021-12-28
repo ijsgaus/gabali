@@ -7,7 +7,7 @@ namespace RabbitRelink;
 public record ProducerConfig()
 {
     public bool ConfirmsMode { get; init; } = true;
-    public Func<MessageProperties, MessageProperties> UpdateProperties { get; init; } = (p => p);
+    public Func<Properties, Properties> UpdateProperties { get; init; } = (p => p);
     public Func<PublishProperties, PublishProperties> UpdatePublish { get; init; } = (p => p);
     public TimeSpan RecoveryInterval { get; init; } = TimeSpan.FromSeconds(10);
     public IMessageIdGenerator IdGenerator { get; init; } = new GuidMessageIdGenerator();

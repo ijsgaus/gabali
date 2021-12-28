@@ -1,3 +1,3 @@
 ﻿namespace RabbitRelink.Middlewares;
 
-public delegate PublishMessage<TOut> ProducerMiddleware<TIn, TOut>(PublishMessage<TIn> next);
+public delegate DoPublish<T> ProducerMiddleware<T>(DoPublish<T> next);

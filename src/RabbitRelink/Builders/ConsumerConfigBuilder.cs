@@ -7,10 +7,10 @@ namespace RabbitRelink;
 
 internal class ConsumerConfigBuilder<TIn> : IConsumerConfigBuilder<TIn> where TIn : class?
 {
-    private readonly Func<PushConsumerConfig, ConsumerHandler<TIn>, IRelinkConsumer> _factory;
+    private readonly Func<PushConsumerConfig, DoConsume<TIn>, IRelinkConsumer> _factory;
 
 
-    public ConsumerConfigBuilder(Func<PushConsumerConfig, ConsumerHandler<TIn>, IRelinkConsumer> factory)
+    public ConsumerConfigBuilder(Func<PushConsumerConfig, DoConsume<TIn>, IRelinkConsumer> factory)
         => _factory = factory;
 
     public IRelinkPullConsumer<TIn> Pull(Func<PullConsumerConfig, PullConsumerConfig>? configure = null)

@@ -1,8 +1,21 @@
 ﻿namespace RabbitRelink.Middlewares;
 
-public interface IProducerMiddleware<TIn, TOut>
-where TIn: class?
-where TOut: class?
+/// <summary>
+/// Interface to operate with outgoing message in middleware chain
+/// </summary>
+/// <typeparam name="T">message body type</typeparam>
+public interface IProducerMiddleware<T>
 {
-    PublishMessage<TOut> NextProducer(PublishMessage<TIn> next);
+    /// <summary>
+    /// Method to operate with outgoing message in middleware chain
+    /// </summary>
+    /// <param name="next">next handler in chain</param>
+    /// <returns>this handler in chain</returns>
+    DoPublish<T> Next(DoPublish<T> next);
+
+    /// <summary>
+    /// Convert to function representation
+    /// </summary>
+    /// <returns>Function to operate with outgoing message in middleware chain</returns>
+    ProducerMiddleware<T> AsProducerMiddleware() => Next;
 }

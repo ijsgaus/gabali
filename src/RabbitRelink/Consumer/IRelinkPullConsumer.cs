@@ -14,7 +14,7 @@ namespace RabbitRelink.Consumer
     public interface IRelinkPullConsumer<T> : IDisposable where T: class?
     {
         /// <summary>
-        ///     Consumer Id
+        /// Consumer Id
         /// </summary>
         Guid Id { get; }
 
